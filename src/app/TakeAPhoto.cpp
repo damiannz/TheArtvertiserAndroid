@@ -270,8 +270,6 @@ void TakeAPhoto::update(){
 
 void TakeAPhoto::draw(){
 	ofPushStyle();
-	ofSetColor(255);
-	borderFrame.draw();
 	if(state==SelectingQuad){
 		ofSetColor(255);
 		photo.draw(ofGetWidth()*0.5,ofGetHeight()*0.5,videoWidth,videoHeight);
@@ -286,9 +284,11 @@ void TakeAPhoto::draw(){
 		ofSetColor(255,255,255,200);
 		//geo->drawLastLocationImage(20,40);
 		geoPanel.draw();
-		ofPopStyle();
 	}
+	ofSetColor(255);
+	borderFrame.draw();
 
+	ofPopStyle();
 
 }
 
