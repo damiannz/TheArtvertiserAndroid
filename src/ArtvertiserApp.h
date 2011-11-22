@@ -66,6 +66,8 @@
 
 	private:
 		Detector artvertiser;
+        Detector artvertiser_2;
+        
 		TakeAPhoto takeAPhoto;
 		ofPtr<Comm> comm;
 		MainMenu menu;

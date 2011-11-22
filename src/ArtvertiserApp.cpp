@@ -172,7 +172,7 @@ void ArtvertiserApp::update(){
 			subs_img.reloadTexture();
 			refreshArtvert = false;
 		}
-		if(artvertiser.getState()!=Detector::Initializing){
+        if(artvertiser.getState()!=Detector::Initializing && artvertiser_2.getState()!=Detector::Initializing){
 			grabber.update();
 		}else{
 			circularPB.update();
@@ -198,42 +198,46 @@ void ArtvertiserApp::draw(){
 		artvertInfo.draw();
 		break;
 	case Tracking:
-		ofSetHexColor(0xFFFFFF);
-		int x=0, w=camW, h=camH;
-		float scale=1;
-		if(artvertiser.getState()!=Detector::Initializing){
-			h = ofGetHeight();
-			w = float(camW)/float(camH)*float(h);
-			x = (ofGetWidth() - w)/2;
-			scale = float(w)/float(camW);
-			grabber.draw(x,0,w,h);
-		}else{
-			circularPB.draw();
-		}
-		if(artvertiser.isDetected() || artvertiser.isTracked()){
-			ofPushMatrix();
-			ofTranslate(x,0);
-			ofScale(scale,scale,1);
-			glMultMatrixf(artvertiser.getHomography().getPtr());
-			subs_img.draw(0,0);
-			ofPopMatrix();
-		}
-		ofDrawBitmapString("fps: " + ofToString(ofGetFrameRate(), 2), x+20, 20);
-		ofDrawBitmapString("detect fps: " + ofToString(artvertiser.getFps()), x+20, 40);
+        ofSetHexColor(0xFFFFFF);
+        int x=0, w=camW, h=camH;
+        float scale=1;
+        if(artvertiser.getState()!=Detector::Initializing && artvertiser_2.getState()!=Detector::Initializing){
+            h = ofGetHeight();
+            w = float(camW)/float(camH)*float(h);
+            x = (ofGetWidth() - w)/2;
+            scale = float(w)/float(camW);
+            grabber.draw(x,0,w,h);
+        }else{
+            circularPB.draw();
+        }
 
-		if(artvertiser.getState()==Detector::Initializing){
-			ofDrawBitmapString("Initializing", x+20, 60);
-		}else if(artvertiser.isDetected()){
-			ofDrawBitmapString("Detected", x+20, 60);
-		}else if(artvertiser.isTracked()){
-			ofDrawBitmapString("Tracked", x+20, 60);
-		}else{
-			ofDrawBitmapString("NotDetected", x+20, 60);
-		}
-
-		if(!allocated) ofDrawBitmapString("warning: not allocated", x+20, 80);
-		break;
-	}
+            
+            
+        if(artvertiser.isDetected() || artvertiser.isTracked()){
+            ofPushMatrix();
+            ofTranslate(x,0);
+            ofScale(scale,scale,1);
+            glMultMatrixf(artvertiser.getHomography().getPtr());
+            subs_img.draw(0,0);
+            ofPopMatrix();
+        }
+        if(artvertiser_2.isDetected() || artvertiser_2.isTracked() ) {
+            ofPushMatrix();
+            ofTranslate(x,0);
+            ofScale(scale,scale,1);
+            glMultMatrixf(artvertiser_2.getHomography().getPtr());
+            subs_img.draw(0,0);
+            ofPopMatrix();
+        }
+        ofDrawBitmapString("fps: " + ofToString(ofGetFrameRate(), 2), x+20, 20);
+        ofDrawBitmapString("detect fps:     " + ofToString(artvertiser.getFps()), x+20, 40);
+        ofDrawBitmapString(artvertiser.getStateString(), x+20, 60);
+        ofDrawBitmapString("detect fps (2): " + ofToString(artvertiser_2.getFps()), x+20, 80);
+        ofDrawBitmapString(artvertiser_2.getStateString(), x+20, 100);
+        
+        if(!allocated) ofDrawBitmapString("warning: not allocated", x+20, 80);
+        break;
+    }
 }
 
 
@@ -326,11 +330,11 @@ void ArtvertiserApp::artvertSelected(ofFile & artvertimg){
 
 	if(artvert.hasAlias()){
 		artvertiser.setup(artvert.getAlias().getModel().getAbsolutePath(),grabber,imgQuad);
-		ofLogVerbose("ArtvertiserApp", "artvert.hasAlias()");
 	}else{
-		ofLogVerbose("ArtvertiserApp", "doesn't: artvert.hasAlias()");
 		artvertiser.setup(artvert.getModel().getAbsolutePath(),grabber,imgQuad);
 	}
+    
+    artvertiser_2.setup( Artvert::listAll()[0].getModel().getAbsolutePath(), grabber, imgQuad );
 }
 
 //--------------------------------------------------------------
@@ -361,6 +365,7 @@ bool ArtvertiserApp::backPressed(){
 		break;
 	case Tracking:
 		artvertiser.close();
+        artvertiser_2.close();
 		state = Info;
 		artvertInfo.show(artvertInfo.getCurrentArtvert());
 		return true;
