@@ -24,9 +24,15 @@
 #include "PersistanceEngine.h"
 #include "Label.h"
 
+//static const string ARTVERT_SERVER_URL = "http://192.168.1.134:8888";
+static const string ARTVERT_SERVER_URL = "http://10.0.1.134:8888";
+
+//void ofSoundShutdown(){};
 
 //int camW = 800;
 //int camH = 448;
+//int camW = 640;
+//int camH = 480;
 
 //--------------------------------------------------------------
 void ArtvertiserApp::setup(){
@@ -106,12 +112,12 @@ void ArtvertiserApp::setup(){
 	takeAPhoto.setGeo(geo);
 	takeAPhoto.setup(grabber);
 
-	onlineArtverts.setURL("http://192.168.1.134:8888");
+	onlineArtverts.setURL(ARTVERT_SERVER_URL);
 	onlineArtverts.setIconCache(iconCache);
 	onlineArtverts.setComm(comm);
 	onlineArtverts.setup();
 
-	comm->setURL("http://192.168.1.134:8888");
+	comm->setURL(ARTVERT_SERVER_URL);
 	comm->start();
 
 
