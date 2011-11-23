@@ -8,7 +8,7 @@ import android.location.Geocoder;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup.MarginLayoutParams;
-import cc.openframeworks.androidFerns.R;
+import cc.openframeworks.TheArtvertiserAndroid.R;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapView;
